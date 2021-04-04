@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{%block title%}{%endblock%}</title>
+  <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.css')}}">
+  <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+  <script src="{{url_for('static',filename='js/jquery.slim.min.js')}}"></script>
+  <script src="{{url_for('static',filename='js/bootstrap.bundle.min.js')}}"></script>
+  <style>
+    #profile_logo{
+      max-height: 50px;
+      max-width: 50px;
+      filter: invert(1);
+      border-radius: 50%;
+    }
+    #searchbox{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #searchbox form input{
+      padding-left: 10px;
+    }
+    #signup_name{
+      display: flex;
+      justify-content: space-between;
+    }
+    #signup_name input{
+      width: 49%;
+    }
+    #login_form{
+      display: inline-block;
+      cursor: pointer;
+      align-self: center;
+      color: blue;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-dark navbar-expand-sm bg-dark d-flex" style="justify-content:space-between">
+    <ul class="navbar-nav">
+      <li class="nav-item"><a href="/" class="nav-link active">Home</a></li>
+      <li class="nav-item"><a href="/signup" class="nav-link">SignUp</a></li>
+      <li class="nav-item"><a href="" class="nav-link" data-toggle="modal" data-target="#LoginModal">login</a></li>
+      <li class="nav-item"><a href="/updateprofile" class="nav-link">Update Profile</a></li>
+      <li class="nav-item"><a href="/logout" class="nav-link">Logout</a></li>
+      <li class="nav-item"><a href="/delete" class="nav-link">Delete Account</a></li>
+      <li class="nav-item"><a href="/resetpass" class="nav-link">Reset Password</a></li>
+      <li class="nav-item"><a href="/addarticle" class="nav-link"> Add Article</a></li>
+    </ul>
+
+
+    <button type="button" style="background: none;border: 1px solid white;border-radius: 50%;" data-toggle="modal" data-target="#LoginModal">
+      {% if user_name %}
+      {%for uname in user_name%}
+      {% if uname.image %}
+        {% set image_name ='img/'+uname.image%}
+          <img src="{{url_for('static', filename=image_name)}}" alt="profile.png" id="profile_logo">
+      {% else %}
+        <img src="{{url_for('static', filename='img/login.png')}}" alt="logo.jpg" id="profile_logo">
+      {% endif %}
+      {% endfor %}
+      {% else %}
+        <img src="{{url_for('static', filename='img/login.png')}}" alt="logo.jpg" id="profile_logo">
+      {% endif %}
+    </button>
+  </nav>
+  {% block body%}{% endblock %}
+  <script src="{{url_for('static', filename='js/bootstrap.js')}}"></script>
+</body>
+</html>

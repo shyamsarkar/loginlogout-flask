@@ -1,0 +1,16 @@
+{%extends 'basetemplate.html'%}
+{%block title%}Reset Password{%endblock%}
+{%block body%}
+
+    <div class="container ">
+        <form action="/resetpass" method="POST" class="d-flex flex-column w-50 min-vh-100 m-auto  justify-content-md-center">
+            <h1>Reset Password</h1>
+            <input type="email" name="user_email" placeholder="Email Address" class="my-2" required>
+            <input type="password" name="oldpass" placeholder="Old Password" class="my-2" required>
+            <input type="password" name="newpass" placeholder="New Password" class="my-2" required>
+            <input type="password" name="cpass" placeholder="Confirm Password" class="my-2" required>
+            <button type="submit" class="btn btn-success my-2">Reset</button>
+        </form>
+    </div>
+
+{%endblock%}

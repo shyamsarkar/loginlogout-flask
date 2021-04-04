@@ -1,0 +1,76 @@
+{% extends 'basetemplate.html' %}
+
+
+{%block title%}My Website{%endblock%}
+
+
+
+
+{% block body%}
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, mssg in messages %}
+        <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+          <span>{{mssg}}</span>
+          <button type="button" class="close" data-dismiss="alert" area-label="Close">
+            <span area-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+
+ 
+  <div class="container ">
+    <div id="searchbox">
+      <h1 class="my-4">{{values['value_1']}}</h1>
+      <form action="/articles" method="POST" class="my-2">
+        <input type="text" name="search" placeholder="Articles" required>
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+    </div>
+    {% for news in all_news.items %}
+    {%for uname in user_name%}
+      <div class="row ">
+        <div class="border border-primary w-100 jumbotron">
+          <div class="row">
+            <div class="col-sm-4">
+              <img style="height: 50px;" src="{{url_for('static', filename='img/login.png')}}" alt="Error">
+              <span>{{uname.fname.upper()}} {{uname.lname.upper()}}</span>
+            </div>
+            <div class="col-sm-8 font-weight-bold d-flex justify-content-end align-items-center"><h5>{{news.title.capitalize()}}</h5></div>
+          </div>
+          <div class="mx-4 my-4">
+            <p>{{news.content.capitalize()}}</p>
+            
+          </div>
+          <div class="d-flex bg-secondary">
+            <div class="col-sm-6 text-white">{{news.date}}</div>
+            <div class="col-sm-6 d-flex justify-content-center text-white">{{uname.email}}</div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endfor %}
+  </div>
+
+
+  <div class="container">
+    {% if number and number==1 %}
+      <a href="" style="display: none;">Previous</a>
+    {% elif number and number>1 %}
+      <a href="/page/{{number-1}}" style="text-decoration: none; font-weight: bold;">Previous {{number-1}}</a>
+    {% else %}
+      <p style="font-weight: bold; margin: 0;">Previous</p>
+    {% endif %}
+    {% if number and number < total_pages %}
+      <a href="/page/{{number+1}}" style="float:right;text-decoration: none; font-weight: bold;">Next {{number+1}}</a>
+    {% else %}
+      <a href="/page/{{number+1}}" style="display: none;">Next</a>
+    {% endif %}
+  </div>
+
+
+{% endblock %}

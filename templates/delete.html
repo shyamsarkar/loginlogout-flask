@@ -1,0 +1,13 @@
+{%extends 'basetemplate.html'%}
+{%block title%}Delete Account{%endblock%}
+{%block body%}
+
+    <div class="container ">
+        <h1>Permanent Delete Account</h1>
+        <form action="/delete" method="POST" class="d-flex flex-column w-50 min-vh-100 m-auto  justify-content-md-center">
+            <input type="password" name="cpass" placeholder="Confirm Password" class="my-2" required>
+            <button type="submit" class="btn btn-danger my-2">Permanent Delete</button>
+        </form>
+    </div>
+
+{%endblock%}
