@@ -338,4 +338,5 @@ def addarticle():
     return render_template('article.html')
 
 if __name__ == '__main__':
+    # app.run(debug=True, host="192.168.43.62", port=80)
     app.run(debug=True)
