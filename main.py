@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from datetime import datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-import json, os
+import json
+import os
 
 with open('config.json') as f:
     values = json.load(f)['values']
@@ -30,6 +31,7 @@ class Personaldetail(db.Model):
 
 """ Deleted Account Class """
 
+
 class DeletedAC(db.Model):
     serial = db.Column(db.Integer, primary_key=True)
     fname = db.Column(db.String(50))
@@ -37,19 +39,18 @@ class DeletedAC(db.Model):
     email = db.Column(db.String(50))
     password = db.Column(db.String(255))
     createdon = db.Column(db.String(20))
-    deletedon= db.Column(db.String(20))
+    deletedon = db.Column(db.String(20))
     image = db.Column(db.String(10), nullable=True)
 
 
 """ News Class = all articles """
+
 
 class News(db.Model):
     serial = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.String(1000), nullable=False)
     date = db.Column(db.String(20), nullable=False)
-
-
 
 
 """ Home Route """
@@ -60,10 +61,11 @@ def home():
     if "userEmail" in session:
         user_name = Personaldetail.query.filter_by(email=session['userEmail'])
         cook_key = request.cookies.get('articletype')
-        if cook_key==None:
-            cookie_less = News.query.paginate(per_page=values['article_length'], page=1)
+        if cook_key == None:
+            cookie_less = News.query.paginate(
+                per_page=values['article_length'], page=1)
 
-            return render_template('index.html',user_name=user_name,values=values,all_news=cookie_less,number=1,total_pages=2)
+            return render_template('index.html', user_name=user_name, values=values, all_news=cookie_less, number=1, total_pages=2)
         else:
             cookie_found = News.query.filter_by(cook_key)
             return render_template('index.html', user_name=user_name, values=values, all_news=cookie_found)
@@ -71,10 +73,10 @@ def home():
         return redirect(url_for('logout'))
 
 
-
 """ Pagination """
 
-@app.route('/page/<string:page_number>', methods=['GET','POST'])
+
+@app.route('/page/<string:page_number>', methods=['GET', 'POST'])
 def pagination(page_number):
     if "userEmail" in session:
         user_name = Personaldetail.query.filter_by(email=session['userEmail'])
@@ -82,21 +84,21 @@ def pagination(page_number):
         for elements in user_name:
             user_pass_home = elements.password
         cook_key = request.cookies.get('articletype')
-        if cook_key==None:
-            number=int(page_number)
+        if cook_key == None:
+            number = int(page_number)
             total_article = News.query.all()
             if len(total_article) % values['article_length'] == 0:
                 total_pages = len(total_article) / values['article_length']
             else:
                 total_pages = len(total_article) / values['article_length'] + 1
 
-            cookie_less = News.query.paginate(per_page=values['article_length'], page=number)
-            return render_template('index.html',user_name=user_name,values=values,all_news=cookie_less,number=number,total_pages=total_pages)
+            cookie_less = News.query.paginate(
+                per_page=values['article_length'], page=number)
+            return render_template('index.html', user_name=user_name, values=values, all_news=cookie_less, number=number, total_pages=total_pages)
         else:
             cookie_found = News.query.filter_by(cook_key)
             return render_template('index.html', user_name=user_name, values=values, all_news=cookie_found)
     return redirect(url_for('login'))
-
 
 
 """ SignUP Route  """
@@ -121,9 +123,10 @@ def signup():
                         timing = datetime.now()
                         session.permanent = True
                         session['userEmail'] = email
-                        pass_hash = generate_password_hash(password, method='sha256')
+                        pass_hash = generate_password_hash(
+                            password, method='sha256')
                         OBJ = Personaldetail(fname=fname, lname=lname, email=email, password=pass_hash,
-                                                      timing=timing, image="")
+                                             timing=timing, image="")
                         db.session.add(OBJ)
                         db.session.commit()
                         flash('Account Created Successfully!', 'success')
@@ -138,6 +141,7 @@ def signup():
 
 
 """ Login Route """
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -154,7 +158,7 @@ def login():
             for elements in OBJ:
                 userPassword = elements.password
                 userEmail = elements.email
-            if userEmail==False:
+            if userEmail == False:
                 flash('Account does not exist!', 'warning')
             elif check_password_hash(userPassword, password):
                 session['userEmail'] = email
@@ -192,13 +196,15 @@ def resetname():
                 lname = request.form.get('lname')
                 dpimg = request.files['dpimg']
                 extension_file = dpimg.filename.split(".")[-1]
-                name_detail = Personaldetail.query.filter_by(email=session['emailid']).first()
+                name_detail = Personaldetail.query.filter_by(
+                    email=session['emailid']).first()
                 name_detail.fname = fname
                 name_detail.lname = lname
-                if extension_file=="jpg" or extension_file=="png":
+                if extension_file == "jpg" or extension_file == "png":
                     image_name = str(name_detail.serial)
                     full_name_image = image_name+".png"
-                    dpimg.save(os.path.join(app.config['UPLOAD_FOLDER'], full_name_image))
+                    dpimg.save(os.path.join(
+                        app.config['UPLOAD_FOLDER'], full_name_image))
                     name_detail.image = full_name_image
                 else:
                     print("Invalid image")
@@ -227,9 +233,10 @@ def deleteac():
                 user_deletedon = datetime.now()
                 user_image = elements.image
             if check_password_hash(user_password, confirm_pass):
-                user_detail = Personaldetail.query.filter_by(email=session['userEmail']).first()
+                user_detail = Personaldetail.query.filter_by(
+                    email=session['userEmail']).first()
                 backup_data = DeletedAC(fname=user_fname, lname=user_lname, email=user_email,
-                        password=user_password,createdon=user_timing, deletedon=user_deletedon,image=user_image)
+                                        password=user_password, createdon=user_timing, deletedon=user_deletedon, image=user_image)
                 db.session.add(backup_data)
                 db.session.delete(user_detail)
                 db.session.commit()
@@ -238,7 +245,7 @@ def deleteac():
             else:
                 flash('Invalid Credential!', 'danger')
                 return redirect(url_for('home'))
-        return render_template('delete.html',user_name=user_name)
+        return render_template('delete.html', user_name=user_name)
     flash('To Delete Account, You must Login First.', 'warning')
     return redirect(url_for('login'))
 
@@ -258,7 +265,8 @@ def resetpass():
             for elements in user_name:
                 user_pass_reset = elements.password
             if check_password_hash(user_pass_reset, old_pass) and (new_pass == confirm_pass):
-                update_pass = Personaldetail.query.filter_by(email=session['userEmail']).first()
+                update_pass = Personaldetail.query.filter_by(
+                    email=session['userEmail']).first()
                 pass_hash = generate_password_hash(new_pass, method='sha256')
                 update_pass.password = pass_hash
                 db.session.commit()
@@ -266,24 +274,26 @@ def resetpass():
                 flash('Password Reset Successful', 'success')
                 return redirect(url_for('login'))
             else:
-                flash('Something Went Wrong! This caused because of incorrect data.', 'danger')
+                flash(
+                    'Something Went Wrong! This caused because of incorrect data.', 'danger')
                 return redirect(url_for('login'))
-        return render_template('resetpass.html',user_name=user_name)
+        return render_template('resetpass.html', user_name=user_name)
     flash('Login First!', 'warning')
     return redirect(url_for('login'))
 
 
 """alternate option for reset password or Forgot password """
 
+
 @app.route('/resetpassalt', methods=['GET', 'POST'])
 def resetpassalt():
-    if request.method=='POST':
+    if request.method == 'POST':
         fname = request.form.get('fname')
         lname = request.form.get('lname')
         email = request.form.get('email')
         new_pass = request.form.get('new_pass')
         cnew_pass = request.form.get('cnew_pass')
-        if new_pass==cnew_pass:
+        if new_pass == cnew_pass:
             OBJ = Personaldetail.query.filter_by(email=email)
             user_pass_reset = False
             user_fname_reset = False
@@ -292,31 +302,33 @@ def resetpassalt():
                 user_pass_reset = elements.password
                 user_fname_reset = elements.fname
                 user_lname_reset = elements.lname
-            if (user_pass_reset!=False):
-                if (fname==user_fname_reset) and (lname==user_lname_reset):
-                    update_pass = Personaldetail.query.filter_by(email=email).first()
-                    pass_hash = generate_password_hash(new_pass, method='sha256')
+            if (user_pass_reset != False):
+                if (fname == user_fname_reset) and (lname == user_lname_reset):
+                    update_pass = Personaldetail.query.filter_by(
+                        email=email).first()
+                    pass_hash = generate_password_hash(
+                        new_pass, method='sha256')
                     update_pass.password = pass_hash
                     db.session.commit()
                     session.pop('userEmail', None)
                     flash('Password Reset Successful', 'success')
                     return redirect(url_for('login'))
                 else:
-                    flash('Name did not match!','danger')
+                    flash('Name did not match!', 'danger')
             else:
                 flash('Account Not Found!', 'danger')
                 return redirect(url_for('login'))
         else:
-            flash('Password did not match!','danger')
+            flash('Password did not match!', 'danger')
     return render_template('forgotpass.html')
-
 
 
 """ Cookies Route """
 
-@app.route('/articles',methods=['GET','POST'])
+
+@app.route('/articles', methods=['GET', 'POST'])
 def articles():
-    if request.method=='POST':
+    if request.method == 'POST':
         search = request.form.get('search')
         response = make_response("Your cookie is set...")
         response.set_cookie('articletype', search)
@@ -325,9 +337,10 @@ def articles():
 
 """ Add New Article or News """
 
-@app.route('/addarticle', methods=['GET','POST'])
+
+@app.route('/addarticle', methods=['GET', 'POST'])
 def addarticle():
-    if request.method=='POST':
+    if request.method == 'POST':
         title = request.form.get('title')
         content = request.form.get('content')
         date = datetime.now()
@@ -337,6 +350,7 @@ def addarticle():
         flash('Article Added Successfully', 'success')
     return render_template('article.html')
 
+
 if __name__ == '__main__':
-    # app.run(debug=True, host="192.168.43.62", port=80)
+    # app.run(debug=True, host="", port=80)
     app.run(debug=True)
