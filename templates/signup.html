@@ -1,104 +1,42 @@
-{%extends 'basetemplate.html'%}
-{%block title%}SignUp{%endblock%}
-{%block body%}
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Login System Flask</title>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, mssg in messages %}
-                <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
-                <span>{{mssg}}</span>
-                <button type="button" class="close" data-dismiss="alert" area-label="Close">
-                    <span area-hidden="true">&times;</span>
-                </button>
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-
-
-<div class="container ">
-    <form action="/signup" method="POST" class="d-flex flex-column w-50 min-vh-100 m-auto  justify-content-md-center">
-        <h1>Create Account</h1>
-        <div  id="signup_name">
-            <input type="text" name="fname" placeholder="First Name" required>
-            <input type="text" name="lname" placeholder="Last Name" required>
-        </div>
-        <input type="email" name="email" placeholder="Email Address" class="my-2" required>
-        <input type="password" name="password" id="password" placeholder="Password" class="my-2" required>
-        <input type="password" name="cpassword" id="cpassword" placeholder="Confirm Password" class="my-2" required>
-        <label for="show_pass">Show Password
-            <input type="checkbox" id="show_pass">
-        </label>
-        <button type="submit" class="btn btn-success my-2">SignUp</button>
-        <span id="login_form" data-toggle="modal" data-target="#LoginModal">Already Have An Account?</span>
-        
-    </form>
-</div>
-
-
-
-
-
-<!-- Modal -->
-<div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title" id="LoginModalLabel">Login</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <!-- <form class="d-flex flex-column w-75 my-3 mx-auto">
-                    <input type="text" name="username" id="username" class="my-2" placeholder="UserName">
-                    <input type="password" name="password" id="password" class="my-2" placeholder="Password">
-                    <button type="submit" class="btn btn-success my-2">Submit</button> 
-                </form> -->
-          <form action="/login" method="POST" class="d-flex flex-column w-50 min-vh-50 m-auto  justify-content-md-center">
-            <input type="email" name="email" placeholder="Email Address" class="my-2" required>
-            <input type="password" name="password" placeholder="Password" class="my-2" required>
-            <button type="submit" class="btn btn-success my-2">Login</button>
-            <a href="/resetpassalt" class="my-3">Forgot Password?</a>
-          </form>
-  
-  
-        </div>
+<body>
+   <div class="mt-5">
+      <div class="container">
+         <div class="row">
+            <form action="/signup" method="POST" class="w-50 border py-5">
+               <div class="mb-3 row">
+                  <label for="username" class="col-sm-4 col-form-label">User Name</label>
+                  <div class="col-sm-8">
+                     <input type="text" class="form-control" name="username" id="username"
+                        placeholder="Enter User Name">
+                  </div>
+               </div>
+               <div class="mb-3 row">
+                  <label for="password" class="col-sm-4 col-form-label">Password</label>
+                  <div class="col-sm-8">
+                     <input type="password" class="form-control" name="password" id="password"
+                        placeholder="Enter Password">
+                  </div>
+               </div>
+               <button type="submit" class="btn btn-success mt-3">Signup</button>
+               <a href="/login" class="link-primary">Already have an account?</a>
+            </form>
+         </div>
       </div>
-    </div>
-  </div>
-  
-  
+   </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+   integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
-
-
-
-<script>
-    $(document).ready(function (){
-
-        // for showing password
-        let show_pass = document.getElementById("show_pass");
-        show_pass.addEventListener("change", function (){
-            const password = document.getElementById("password");
-            const cpassword = document.getElementById("cpassword");
-            if (password.type === 'password'){
-                password.type = 'text';
-                cpassword.type = 'text';
-            }
-            else{
-                password.type = 'password';
-                cpassword.type = 'password';
-            }   
-        });
-
-
-        // for login form
-        let login_form = document.getElementById("login_form");
-        login_form.addEventListener("click", function (){
-            console.log("You Clicked on Login form");
-        });
-    });
-    
-</script>
-{%endblock%}
+</html>
